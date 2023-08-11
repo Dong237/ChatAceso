@@ -7,8 +7,8 @@
 - [Finetuning](#finetuning)
 - [Data](#data)
 - [Inference](#inference)
-  * [Command Line Inference](#command-line-inference)
-  * [Web Demo](#web-demo)
+  * Command Line Inference
+  * Web Demo
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 
