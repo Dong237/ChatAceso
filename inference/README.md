@@ -4,17 +4,27 @@ This directory contains code for inference built on top of [OpenChatKit](https:/
 Example of an bash script for inference can be found [here](https://github.com/Dong237/HealthBot/blob/main/inference.sh)
 
 ## Arguments
-- `--gpu-id`: Primary GPU device to load inputs onto for inference. Default: `0`
-- `--model`: name/path of the model. Default = `../huggingface_models/GPT-NeoXT-Chat-Base-20B`
-- `--peft`: indicates whether to use the model fine-tuned with PEFT, default is False
-- `--peft-weights`: name/path of PEFT weights, only required when peft is used
+
+**Model Arguments**:
+- `--model`: name/path of the model. Default is "meta-llama/Llama-2-7b-chat-hf".
+- `--cache-dir`: name/path of the cache directory. Default is "/scratch/huggingface".
+- `--peft`: whether to load the model with existing PEFT weights. If True, user must also provide the path to the PEFT weights. Default is False.
+- `--peft-weights`: name/path of PEFT weights. Default is "/peft_weights".
+
+**Hardware Arguments**:
+- `--gpu-id`: the ID of the GPU to run on. Default is 0.
+- `-g` `--gpu-vram`: GPU ID and VRAM to allocate to loading the model, separated by a `:` in the format `ID:RAM` where ID is the CUDA ID and RAM is in GiB. `gpu-id` must be present in this list to avoid errors. Accepts multiple values, for example, `-g ID_0:RAM_0 ID_1:RAM_1 ID_N:RAM_N`
+- `-r` `--cpu-ram`: CPU RAM overflow allocation for loading the model. Optional, and only used if the model does not fit onto the GPUs given.
+
+**Inference Arguments**:
 - `--max-tokens`: the maximum number of tokens to generate. Default: `128`
 - `--sample`: indicates whether to sample. Default: `True`
 - `--temperature`: temperature for the LM. Default: `0.6`
 - `--top-k`: top-k for the LM. Default: `40`
-- `--retrieval`: augment queries with context from the retrieval index. Default `False`
-- `-g` `--gpu-vram`: GPU ID and VRAM to allocate to loading the model, separated by a `:` in the format `ID:RAM` where ID is the CUDA ID and RAM is in GiB. `gpu-id` must be present in this list to avoid errors. Accepts multiple values, for example, `-g ID_0:RAM_0 ID_1:RAM_1 ID_N:RAM_N`
-- `-r` `--cpu-ram`: CPU RAM overflow allocation for loading the model. Optional, and only used if the model does not fit onto the GPUs given.
+- `--repetition-penalty`: repetition penalty for the generation. Default is 1.0.
+
+
+
 
 ## Hardware requirements for inference
 The GPT-NeoXT-Chat-Base-20B model requires at least 41GB of free VRAM. Used VRAM also goes up by ~100-200 MB per prompt. 
