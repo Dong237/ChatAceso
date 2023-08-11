@@ -1,8 +1,6 @@
 # Inference
 This directory contains code for inference built on top of [OpenChatKit](https://github.com/togethercomputer/OpenChatKit/tree/main/inference), with extra options of using PEFT model
 
-Example of an bash script for inference can be found [here](https://github.com/Dong237/HealthBot/blob/main/inference.sh)
-
 ## Arguments
 
 **Model Arguments**:
@@ -23,19 +21,25 @@ Example of an bash script for inference can be found [here](https://github.com/D
 - `--top-k`: top-k for the LM. Default: `40`
 - `--repetition-penalty`: repetition penalty for the generation. Default is 1.0.
 
+## Inferencing
 
+An Example of a bash script for inference:
 
+```bash
+export TRANSFORMERS_CACHE="/scratch/huggingface"
 
-## Hardware requirements for inference
-The GPT-NeoXT-Chat-Base-20B model requires at least 41GB of free VRAM. Used VRAM also goes up by ~100-200 MB per prompt. 
-
-- A **minimum of 80 GB is recommended** 
-
-- A **minimum of 48 GB in VRAM is recommended** for fast responses.
-
-If you'd like to run inference on a GPU with <48 GB VRAM, refer to this section on [running on consumer hardware](#running-on-consumer-hardware).
-
-By default, inference uses only CUDA Device 0.
+python inference/cli/bot.py \
+    --gpu-id 0 \
+    -g 0:24 \
+    --model 'meta-llama/Llama-2-7b-chat-hf' \
+    --sample True \
+    --temperature 0.7 \
+    --top-k 50 \
+    --max-tokens 1024 \
+    --repetition-penalty 1.1 \
+    --peft True \
+    --peft-weights 'PEFT_WEIGHTS_FOLDER' \
+```
 
 **NOTE: Inference currently requires at least 1x GPU.**
 
@@ -65,21 +69,3 @@ Also, if needed, add the argument `--gpu-id ID` where ID is the CUDA ID of the d
 - **Example #2**: to run inference on devices 0 and 3 with a max of 10GiB on 0 and 40GiB on 3, with device 0 as the primary device, add: `-g 0:10 3:40`. In this example, `--gpu-id` is not required because device 0 is specified in `-g`.
 - **Example #3**: to run inference only on device 1 with a max of 75 GiB, add: `--gpu-id 1 -g 1:75`
 
-
-## Running on consumer hardware
-If you have multiple GPUs, each <48 GB VRAM, [the steps mentioned in this section on running on multiple GPUs](#running-on-multiple-gpus) still apply, unless, any of these apply:
-- Running on just 1x GPU with <48 GB VRAM,
-- <48 GB VRAM combined across multiple GPUs
-- Running into Out-Of-Memory (OOM) issues
-
-In which case, add the flag `-r CPU_RAM` where CPU_RAM is the maximum amount of RAM you'd like to allocate to loading model. Note: This significantly reduces inference speeds. 
-
-The model will load without specifying `-r`, however, it is not recommended because it will allocate all available RAM to the model. To limit how much RAM the model can use, add `-r`.
-
-If the total VRAM + CPU_RAM < the size of the model in GiB, the rest of the model will be offloaded to a folder "offload" at the root of the directory. Note: This significantly reduces inference speeds.
-
-- Example: `-g 0:12 -r 20` will first load up to 12 GiB of the model into the CUDA device 0, then load up to 20 GiB into RAM, and load the rest into the "offload" directory.
-
-How it works: 
-- https://github.com/huggingface/blog/blob/main/accelerate-large-models.md
-- https://www.youtube.com/embed/MWCSGj9jEAo
