@@ -41,6 +41,21 @@ python inference/cli/bot.py \
     --peft-weights 'PEFT_WEIGHTS_FOLDER' \
 ```
 
+This example will download the model checkpoint from huggingface and the peft weights from the specified folder. Modle will be loaded onto "cuda:0" in this case.
+
+Loading the model can take some time, but once it's loaded, you are greeted with a prompt. Say hello.
+
+```shell
+$ python inference/cli/bot.py 
+Welcome to Aceso.   Type /help or /? to list commands.
+
+>>> 
+```
+
+Enter additional queries at the prompt, and the model replies. Under the covers, the shell is forming a prompt with all previous queries and passes that to the model to generate more text.
+
+The shell also supports additional commands to inspect hyperparamters, the full prompt, and more. Commands are prefixed with a `/`.
+
 **NOTE: Inference currently requires at least 1x GPU.**
 
 ## Running on multiple GPUs
