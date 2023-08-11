@@ -1,5 +1,17 @@
 # ChatAceso
 
+## Contents
+
+- [Getting Started](#getting-started)
+- [Installation](#installation)
+- [Finetuning](#finetuning)
+- [Data](#data)
+- [Inference](#inference)
+  * [Command Line Inference](#command-line-inference)
+  * [Web Demo](#web-demo)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
 ## Getting Started
 
 ChatAceso is a finetuned LLM based on LLaMA-2 model from Meta
@@ -39,11 +51,11 @@ torchrun --nproc_per_node=4 --master_port=8888 train_lora.py \
 
 ## Inference
 
-**Command Line inference**
+**Command Line Inference**
 
 Command line inference is adapted from [OpenChatKit](https://github.com/togethercomputer/OpenChatKit/tree/main/inference). An example for starting the inference script can be found [here](https://github.com/Dong237/ChatAceso/tree/main/inference#inferencing)
 
-**Web inference**
+**Web Demo**
 
 ChatAceso is also available on [hugginface space](https://huggingface.co/spaces/Dong237/ChatAceso).
 
