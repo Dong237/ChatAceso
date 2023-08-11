@@ -39,10 +39,11 @@ torchrun --nproc_per_node=4 --master_port=8888 train_lora.py \
 
 ## Inference
 
-### Command Line inference
+**Command Line inference**
+
 Command line inference is adapted from [OpenChatKit](https://github.com/togethercomputer/OpenChatKit/tree/main/inference). An example for starting the inference script can be found [here](https://github.com/Dong237/ChatAceso/tree/main/inference#inferencing)
 
-### Web inference
+**Web inference**
 
 ChatAceso is also available on [hugginface space](https://huggingface.co/spaces/Dong237/ChatAceso).
 
