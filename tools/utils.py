@@ -95,7 +95,7 @@ def parse_args():
     parser.add_argument(
         '--use-retrieval',
         action="store_true",
-        help='whether to use retieval from knowledge base as context'
+        help='whether to use retrieval from knowledge base as context'
     )
     parser.add_argument(
         '--retrieval-data-path',
