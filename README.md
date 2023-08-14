@@ -1,13 +1,26 @@
 # ChatAceso
 
+## Contents
+
+- [Getting Started](#getting-started)
+- [Installation](#installation)
+- [Finetuning](#finetuning)
+- [Data](#data)
+- [Inference](#inference)
+  * Command Line Inference
+  * Web Demo
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
 ## Getting Started
 
 ChatAceso is a finetuned LLM based on LLaMA-2 model from Meta
 
 ## Installation
 
+```bash
 pip install -r requirements.txt
-
+```
 
 ## Finetuning
 
@@ -34,47 +47,21 @@ torchrun --nproc_per_node=4 --master_port=8888 train_lora.py \
   --wandb_run_name "run_1" \
 ```
 
+## Data
+
 ## Inference
 
-### Command Line inference
-The script is adapted from OpenChatKit
+**Command Line Inference**
 
-Start the bot by calling `bot.py` from the root for the repo.
+Command line inference is adapted from [OpenChatKit](https://github.com/togethercomputer/OpenChatKit/tree/main/inference). An example for starting the inference script can be found [here](https://github.com/Dong237/ChatAceso/tree/main/inference#inferencing)
 
-```shell
-python inference/cli/bot.py \
-    --gpu-id 0 \
-    -g 0:24 \
-    --model 'meta-llama/Llama-2-7b-chat-hf' \
-    --sample True \
-    --temperature 0.7 \
-    --top-k 50 \
-    --max-tokens 1024 \
-    --repetition-penalty 1.1 \
-    --peft True \
-    --peft-weights 'peft_weights' \
-```
-
-This example will download the model checkpoint from huggingface and the peft weights from the specified folder. Modle will be loaded onto "cuda:0" in this case.
-
-Loading the model can take some time, but once it's loaded, you are greeted with a prompt. Say hello.
-
-```shell
-$ python inference/cli/bot.py 
-Welcome to Aceso.   Type /help or /? to list commands.
-
->>> Hello.
-Hello human.
-
->>> 
-```
-
-Enter additional queries at the prompt, and the model replies. Under the covers, the shell is forming a prompt with all previous queries and passes that to the model to generate more text.
-
-The shell also supports additional commands to inspect hyperparamters, the full prompt, and more. Commands are prefixed with a `/`.
-
-
-### Web inference
+**Web Demo**
 
 ChatAceso is also available on [hugginface space](https://huggingface.co/spaces/Dong237/ChatAceso).
+
+## Evaluation
+
+## License
+
+## Acknowledgements
 
