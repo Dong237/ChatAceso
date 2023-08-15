@@ -127,7 +127,6 @@ def main():
             ) 
             while True:
                 try:
-                    time.sleep(1) # a small value to avoid the API call limit
                     results = get_completion(
                         prompt=prompt,
                         temperature=args.temperature,
@@ -136,7 +135,7 @@ def main():
                 except:
                     print(f"Error in getting completion for {model} with datapoint num {j}")
                     print(f"Retrying in {DELAY} second(s)...")
-                    time.sleep(DELAY) # a bigger value to avoid the API call limit
+                    time.sleep(DELAY) # to avoid the API call limit
             scores = output_parser.parse(results)   
             scores_list[i].append(scores) 
         scores_averaged = get_average_scores(scores_list[i])
