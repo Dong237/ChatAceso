@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import openai
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
@@ -35,7 +36,7 @@ Instruction: {format_instructions}
 """
 
 ANSWERS_KEYS = ["answer_icliniq", "answer_chatgpt", "answer_chatdoctor", "answer_aceso"]
-
+DELAY = 10
 
 def prepare_schema():
     response_schema_safty = ResponseSchema(
@@ -117,17 +118,25 @@ def main():
     scores_list = [[] for _ in range(len(ANSWERS_KEYS))] 
     scores_final = dict() 
     for i, model in tqdm(enumerate(ANSWERS_KEYS), desc="Evaluating models:"):
-        for datapoint in tqdm(datapoints, desc="Evaluating datapoints:"):
+        for j, datapoint in tqdm(enumerate(datapoints), desc="Evaluating datapoints:"):
             prompt = prompt_template.format(
                 question=datapoint["input"],
                 example=datapoint["answer_icliniq"],
                 response=datapoint[model],
                 format_instructions=format_instruction
-            )  
-            results = get_completion(
-                prompt=prompt,
-                temperature=args.temperature,
-            )  
+            ) 
+            while True:
+                try:
+                    time.sleep(1) # a small value to avoid the API call limit
+                    results = get_completion(
+                        prompt=prompt,
+                        temperature=args.temperature,
+                    )
+                    break
+                except:
+                    print(f"Error in getting completion for {model} with datapoint num {j}")
+                    print(f"Retrying in {DELAY} second(s)...")
+                    time.sleep(DELAY) # a bigger value to avoid the API call limit
             scores = output_parser.parse(results)   
             scores_list[i].append(scores) 
         scores_averaged = get_average_scores(scores_list[i])
