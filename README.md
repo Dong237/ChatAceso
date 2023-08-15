@@ -1,5 +1,7 @@
 # ChatAceso
 
+<img src="assets/cover.png" width="320" alt="Aceso" align=center/>
+
 ## Contents
 
 - [Getting Started](#getting-started)
