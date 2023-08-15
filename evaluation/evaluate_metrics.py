@@ -1,5 +1,6 @@
 import os
 import sys
+import random
 sys.path.append("/cluster/home/Aceso")
 
 import nltk
@@ -52,6 +53,7 @@ def main():
             datapoints = collect_answers(model, args)
         else:
             datapoints = jload(args.inference_results)
+            datapoints = random.sample(datapoints, args.sample_size)
     
     answers_list = [[], [], [],[]]
     for i, answer_key in enumerate(ANSWERS_KEYS):
