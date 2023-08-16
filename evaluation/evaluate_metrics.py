@@ -68,7 +68,7 @@ def main():
             bleu_score = bleu.compute(
                 predictions=answers_list[i], 
                 references=answers_list[0], 
-                max_order=1
+                max_order=4
                 )
             rouge_score = rouge.compute(
                 predictions=answers_list[i], 
@@ -79,7 +79,10 @@ def main():
             distinct_2 = distinct_n_corpus_level(answers_list[i], 2)
 
             scores = {
-                "bleu1": bleu_score["bleu"],
+                "bleu1": bleu_score["precisions"][0]*bleu_score["brevity_penalty"],
+                "bleu2": bleu_score["precisions"][1]*bleu_score["brevity_penalty"],
+                "bleu3": bleu_score["precisions"][2]*bleu_score["brevity_penalty"],
+                "bleu4": bleu_score["precisions"][3]*bleu_score["brevity_penalty"],
                 "gleu": gleu_score,
                 "rouge1": rouge_score["rouge1"],
                 "rouge2": rouge_score["rouge2"],
