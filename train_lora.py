@@ -57,6 +57,7 @@ def train(
         micro_batch_size: int = 4,
         num_epochs: int = 3,
         learning_rate: float = 3e-4,
+        lr_scheduler_type: str = "linear",
         warmup_steps: int = 100,
         optim:str = "adamw_torch",
         fp16: bool = False, # will cause error if it is not the opposite of 'load_in_8bit' (a trade-off between memory and speed, at least when training on V100)
@@ -85,25 +86,28 @@ def train(
         wandb_run_name: str = "",
         wandb_watch: str = "",
         wandb_log_model: str = "true",
-
+        # resume training
         resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
 ):
     if int(os.environ.get("LOCAL_RANK", 0)) == 0:
         print(
             f"Finetuning model with params:\n"
             "==============================\n"
+
             "model/data params:\n"
             "------------------\n"
             f"base_model: {base_model}\n"
             f"data_path: {data_path}\n"
             f"output_dir: {output_dir}\n"
             f"use_cache: {use_cache}\n"
+
             "training hyperparams:\n"
             "---------------------\n"
             f"batch_size: {batch_size}\n"
             f"micro_batch_size: {micro_batch_size}\n"
             f"num_epochs: {num_epochs}\n"
             f"learning_rate: {learning_rate}\n"
+            f"lr_scheduler_type: {lr_scheduler_type}\n"
             f"warmup_steps: {warmup_steps}\n"
             f"optim: {optim}\n"
             f"fp16: {fp16}\n"
@@ -116,16 +120,19 @@ def train(
             f"save_total_limit: {save_total_limit}\n"
             f"eval_step: {eval_step}\n"
             f"save_step: {save_step}\n"
+
             "lora hyperparams:\n"
             "-----------------\n"
             f"lora_r: {lora_r}\n"
             f"lora_alpha: {lora_alpha}\n"
             f"lora_dropout: {lora_dropout}\n"
             f"lora_target_modules: {lora_target_modules}\n"
+
             "llm hyperparams:\n"
             "----------------\n"
             f"train_on_inputs: {train_on_inputs}\n"
             f"group_by_length: {group_by_length}\n"
+
             "wandb params:\n"
             "-------------\n"
             f"logging_strategy: {logging_strategy}\n"
@@ -263,6 +270,7 @@ def train(
         warmup_steps=warmup_steps,
         num_train_epochs=num_epochs,
         learning_rate=learning_rate,
+        lr_scheduler_type=lr_scheduler_type,
         optim=optim,
         fp16=fp16,
         # logging
