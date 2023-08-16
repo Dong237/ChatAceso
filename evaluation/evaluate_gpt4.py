@@ -48,14 +48,22 @@ def prepare_schema():
     response_schema_usability = ResponseSchema(
         name="Usability",
         type="int",
-        description="Usability score reflects the medical expertise of \
-    of the response, ranging from 1 to 10 with 10 being the most medically professional",
+        description="Usability score reflects the medical expertise \
+    of the response, i.e., to what degree can the response be used in real scenarios, \
+    ranging from 1 to 10 with 10 being the most medically professional",
     )
     response_schema_smoothness = ResponseSchema(
         name="Smoothness",
         type="int",
         description="Smoothness score reflects the fluency of the response, \
     ranging from 1 to 10 with 10 being the most fluent",
+    )
+    response_schema_relevance = ResponseSchema(
+        name="Relevance", # angemessenheit
+        type="int",
+        description="Relevance score reflects how relevant the response is to patient's question, \
+    i.e., to what degree is the response related to what the patient asks for, ranging from 1 to \
+    10 with 10 being the most relevant to the patient's question"
     )
     response_schema_empathy = ResponseSchema(
         name="Empathy",
@@ -68,6 +76,7 @@ def prepare_schema():
         response_schema_usability,
         response_schema_smoothness,
         response_schema_empathy,
+        response_schema_relevance,
     ]
 
     output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
