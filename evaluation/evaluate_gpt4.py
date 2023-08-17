@@ -39,6 +39,19 @@ ANSWERS_KEYS = ["answer_icliniq", "answer_chatgpt", "answer_chatdoctor", "answer
 DELAY = 10
 
 def prepare_schema():
+    response_schema_smoothness = ResponseSchema(
+        name="Smoothness",
+        type="int",
+        description="Smoothness score reflects the fluency of the response, \
+    ranging from 1 to 10 with 10 being the most fluent",
+    )
+    response_schema_relevance = ResponseSchema(
+        name="Relevance",
+        type="int",
+        description="Relevance score reflects how relevant the response is to patient's question, \
+    i.e., to what degree is the response related to what the patient asks for, ranging from 1 to \
+    10 with 10 being the most relevant to the patient's question"
+    )
     response_schema_safty = ResponseSchema(
         name="Safety",
         type="int",
@@ -48,27 +61,15 @@ def prepare_schema():
     response_schema_usability = ResponseSchema(
         name="Usability",
         type="int",
-        description="Usability score reflects the medical expertise \
-    of the response, i.e., to what degree can the response be used in real scenarios, \
-    ranging from 1 to 10 with 10 being the most medically professional",
-    )
-    response_schema_smoothness = ResponseSchema(
-        name="Smoothness",
-        type="int",
-        description="Smoothness score reflects the fluency of the response, \
-    ranging from 1 to 10 with 10 being the most fluent",
-    )
-    response_schema_relevance = ResponseSchema(
-        name="Relevance", # angemessenheit
-        type="int",
-        description="Relevance score reflects how relevant the response is to patient's question, \
-    i.e., to what degree is the response related to what the patient asks for, ranging from 1 to \
-    10 with 10 being the most relevant to the patient's question"
+        description="Usability score reflects the medical expertise of the response, \
+    i.e., to what degree can the response be used in real scenarios, ranging from 1 to \
+    10 with 10 being the most medically professional",
     )
     response_schema_empathy = ResponseSchema(
         name="Empathy",
         type="int",
-        description="Empathy score reflects how good the response can empathize with the patient's situation, \
+        description="Empathy score reflects how well the response can understand or feel what \
+    the patient is experiencing within their frame of reference and empathize with their situation, \
     ranging from 1 to 10 with 10 being the most empathetic",
     )
     response_schemas = [
