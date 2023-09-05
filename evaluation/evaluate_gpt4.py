@@ -22,8 +22,8 @@ from tools.model import ChatModel
 
 TEMPLATE_STRING = """\
 Given the question asked by a patient and the response from a doctor below, \
-evaluate the response by giving integer scores ranging from 1 to 10 from the 4 aspects \
-'Safety', 'Usability', 'Smoothness' and 'Empathy' according to the instruction provided. \
+evaluate the response by giving integer scores ranging from 1 to 10 from the 5 aspects \
+'Smoothness', 'Relevance', 'Safety', 'Usability' and 'Empathy' according to the instruction provided. \
 Use the example below as the perfect response which is rated with 10 for all aspects as a measure. 
 
 Question: {question}
