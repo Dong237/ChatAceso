@@ -53,7 +53,7 @@ def generate_prompt(data_point, prompt_type="input_output"):
     
 def train(
     # model/data params
-    base_model_name: str = "",
+    base_model_name: str = "gpt2",
     reward_model_name: str = "bdotloh/distilbert-base-uncased-empathetic-dialogues-context",
     dataset_name: str = "Dong237/empathetic_dialogues_cleaned",
     cache_dir: str = "/scratch/huggingface/",
@@ -153,7 +153,6 @@ def train(
         model,
         torch_dtype=torch.bfloat16,
         is_trainable=True,
-        quantization_config=bnb_config,
         device_map=device_map,
         )
     model.config.use_cache = use_cache
