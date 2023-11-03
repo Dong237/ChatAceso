@@ -8,3 +8,4 @@ sentencepiece
 transformers==4.28.1
 peft==0.3.0
 bitsandbytes==0.37.2
+tokenizers==0.13.3
