@@ -146,6 +146,54 @@ def parse_args():
         default="inference_results.json",
         help='file name for storing inference results (will be read for evaluation if it exists)'
     )
+    # for gpt4 eval only
+    parser.add_argument(
+        '--model-version1',
+        default=f"meta-llama/Llama-2-7b-chat-hf",
+        help='name/path of the model'
+    )
+    parser.add_argument(
+        '--gpu-id-base',
+        default=0,
+        type=int,
+        help='the ID of the GPU to run on'
+    )
+    parser.add_argument(
+        '-g-base',
+        '--gpu-vram-base',
+        action='store',
+        help='max VRAM to allocate per GPU',
+        nargs='+',
+        required=False,
+    )
+    parser.add_argument(
+        '--gpu-id-version1',
+        default=0,
+        type=int,
+        help='the ID of the GPU to run on'
+    )
+    parser.add_argument(
+        '-g-version1',
+        '--gpu-vram-version1',
+        action='store',
+        help='max VRAM to allocate per GPU',
+        nargs='+',
+        required=False,
+    )
+    parser.add_argument(
+        '--gpu-id-version2',
+        default=0,
+        type=int,
+        help='the ID of the GPU to run on'
+    )
+    parser.add_argument(
+        '-g-version2',
+        '--gpu-vram-version2',
+        action='store',
+        help='max VRAM to allocate per GPU',
+        nargs='+',
+        required=False,
+    )
 
     args = parser.parse_args()
     return args
@@ -218,21 +266,22 @@ def get_max_memory(gpu_vram, cpu_ram) -> dict:
 
 
 # function for performing infernce on data batch 
-def collect_answers(model, args):
+def collect_answers(
+    model, 
+    args, 
+    datapoints,
+    answer_key="answer_aceso"):
     inference_config = {
             'max_new_tokens': args.max_tokens,
             'do_sample': args.sample,
             'temperature': args.temperature,
             'top_k': args.top_k,
             'repetition_penalty': args.repetition_penalty,
-        }
-    random.seed(args.seed)
-    datapoints = random.sample(jload(args.eval_data_path), args.sample_size)    
+        }   
     for datapoint in tqdm(datapoints, desc="Collecting model answers:"):
-        datapoint["answer_aceso"] = model.do_inference(
+        datapoint[answer_key] = model.do_inference(
             prompt=datapoint["input"], 
             **inference_config,
             )
-    jdump(datapoints, args.inference_results)
     print("Finished collection.")
     return datapoints
