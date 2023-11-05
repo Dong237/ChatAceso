@@ -35,7 +35,15 @@ Response: {response}
 Instruction: {format_instructions}
 """
 
-ANSWERS_KEYS = ["answer_icliniq", "answer_chatgpt", "answer_chatdoctor", "answer_aceso"]
+ANSWERS_KEYS = [
+    "answer_icliniq", 
+    "answer_chatgpt", 
+    "answer_chatdoctor", 
+    "answer_medalpaca"
+    "answer_llama2",
+    "answer_aceso_version1", 
+    "answer_aceso_version2"
+    ]
 DELAY = 10
 
 def prepare_schema():
@@ -86,7 +94,6 @@ def prepare_schema():
         response_schema_proficiency,
         response_schema_empathy,
     ]
-
     output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
     prompt_template = PromptTemplate.from_template(template=TEMPLATE_STRING)
     return output_parser, prompt_template
@@ -110,22 +117,74 @@ def get_average_scores(list_dict):
     return {k: sums[k] / len(list_dict) for k in sums.keys()}
 
 
+def load_model(model, gpu_id, gpu_vram, peft=False, peft_weights=None):
+    model = ChatModel(
+        model_name=model, 
+        cache_dir="/scratch/huggingface",
+        peft=peft,
+        peft_weights=peft_weights, 
+        gpu_id=gpu_id, 
+        max_memory=get_max_memory(gpu_vram, None),
+    )
+    return model
+
+
 def main():
     args = parse_args()
-    model = ChatModel(
-        model_name=args.model, 
-        cache_dir=args.cache_dir,
-        peft=args.peft,
-        peft_weights=args.peft_weights, 
-        gpu_id=args.gpu_id, 
-        max_memory=get_max_memory(args.gpu_vram, args.cpu_ram),
+    base_model = load_model(
+        model=args.model, 
+        gpu_id=args.gpu_id_base, 
+        gpu_vram=args.gpu_vram_base
+        )
+    aceso_version1 = load_model(
+        model=args.model_version1, 
+        gpu_id=args.gpu_id_version1, 
+        gpu_vram=args.gpu_vram_version1,
+        )
+    aceso_version2 = load_model(
+        model=args.model_version1, 
+        gpu_id=args.gpu_id_version2, 
+        gpu_vram=args.gpu_vram_version2,
+        peft=True, 
+        peft_weights=args.peft_weights_version2,
+        )
+    medalpaca = load_model(
+        model="baffo32/decapoda-research-llama-7B-hf", 
+        gpu_id=args.gpu_id_medalpaca, 
+        gpu_vram=args.gpu_vram_medalpaca,
+        peft=True, 
+        peft_weights=args.peft_weights_medalpaca,
     )
+    
+    answer_keys = [
+        "answer_llama2", 
+        "answer_aceso_version1", 
+        "answer_aceso_version2",
+        "answer_medalpaca"
+        ]
+    models = [
+        base_model, 
+        aceso_version1, 
+        aceso_version2,
+        medalpaca
+        ]
+    
+    random.seed(args.seed)
+    datapoints = random.sample(jload(args.eval_data_path), args.sample_size) 
+    
     if args.new_evaluation:
-        datapoints = collect_answers(model, args)    
+        for m, answer_key in enumerate(answer_keys): 
+            datapoints = collect_answers(models[m], args, datapoints, answer_key)    
+            jdump(datapoints, args.inference_results)
+            print("=============================================")
+            print("Inference results of new evaluation is saved to {}".format(args.inference_results))
     else:
         if not os.path.exists(args.inference_results):
-            datapoints = collect_answers(model, args)
+            for m, answer_key in enumerate(answer_keys): 
+                datapoints = collect_answers(models[m], args, datapoints, answer_key)
         else:
+            print("=============================================")
+            print("Using existing inference results")
             datapoints = jload(args.inference_results)
             datapoints = random.sample(datapoints, args.sample_size)
 
