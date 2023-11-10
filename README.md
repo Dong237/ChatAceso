@@ -24,28 +24,30 @@ pip install -r requirements.txt
 
 ## Finetuning
 
-The finetuning process uses LoRA and the script is adapted based on [alpaca-lora](https://github.com/tloen/alpaca-lora). Users can run the following example for distributed training.
+- Version1: the first version uses Supervised Fine-Tuning (SFT). The process uses LoRA and the script is adapted based on [alpaca-lora](https://github.com/tloen/alpaca-lora). Users can run the following example for distributed training.
 
-```shell
-torchrun --nproc_per_node=4 --master_port=8888 train_lora.py \
-  --base_model "meta-llama/Llama-2-7b-chat-hf" \
-  --data_path '/Aceso-110k.json' \
-  --output_dir './output' \
-  --use_cache False \
-  --batch_size 128 \
-  --micro_batch_size 4 \
-  --num_epochs 3 \
-  --learning_rate 1e-4 \
-  --cutoff_len 512 \
-  --val_set_size 5000 \
-  --save_strategy "steps" \
-  --eval_step 200 \
-  --save_step 200 \
-  --logging_steps 20 \
-  --report_to "wandb" \
-  --wandb_project "project" \
-  --wandb_run_name "run_1" \
-```
+  ```shell
+  torchrun --nproc_per_node=4 --master_port=8888 train_lora.py \
+    --base_model "meta-llama/Llama-2-7b-chat-hf" \
+    --data_path '/Aceso-110k.json' \
+    --output_dir './output' \
+    --use_cache False \
+    --batch_size 128 \
+    --micro_batch_size 4 \
+    --num_epochs 3 \
+    --learning_rate 1e-4 \
+    --cutoff_len 512 \
+    --val_set_size 5000 \
+    --save_strategy "steps" \
+    --eval_step 200 \
+    --save_step 200 \
+    --logging_steps 20 \
+    --report_to "wandb" \
+    --wandb_project "project" \
+    --wandb_run_name "run_1" \
+  ```
+
+- Version2: the second version is fine-tuned with RLAIF with the help of [RL4LMs](https://github.com/allenai/RL4LMs)
 
 ## Data
 
@@ -61,11 +63,9 @@ Command line inference is adapted from [OpenChatKit](https://github.com/together
 
 **Web Demo**
 
-ChatAceso is also available on [hugginface space](https://huggingface.co/spaces/Dong237/ChatAceso).
+ChatAceso is also available on Hugginface spaces with [Version1](https://huggingface.co/spaces/Dong237/ChatAceso-version1) and Version2
 
 ## Evaluation
 
-## License
-
 ## Acknowledgements
-
+The based model of this work is from [Meta](https://ai.meta.com/llama/). My greatest appreaciation to [ChatDoctor](https://github.com/Kent0n-Li/ChatDoctor), [MedAlpaca](https://github.com/kbressem/medAlpaca), [HuatuoGPT](https://github.com/FreedomIntelligence/HuatuoGPT), [RL4LMs](https://github.com/allenai/RL4LMs) and many other similar works for providing datasets, training / evaluation frameworks and many other inspirations. 
