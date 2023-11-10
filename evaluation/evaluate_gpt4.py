@@ -39,10 +39,10 @@ ANSWERS_KEYS = [
     "answer_icliniq", 
     "answer_chatgpt", 
     "answer_chatdoctor", 
-    "answer_medalpaca"
+    "answer_medalpaca",
     "answer_llama2",
     "answer_aceso_version1", 
-    "answer_aceso_version2"
+    "answer_aceso_version2",
     ]
 DELAY = 10
 
@@ -214,12 +214,16 @@ def main():
                     time.sleep(DELAY) # to avoid the API call limit
             scores = output_parser.parse(results)   
             scores_list[i].append(scores) 
-        scores_averaged = get_average_scores(scores_list[i])
-        scores_final[model] = scores_averaged
-    
-    jdump(scores_final, args.evaluation_results)
-    print("=============================================")
-    print("Evaluation results saved to {}".format(args.evaluation_results))
+        # whether single scores are needed for statistical analysis
+        if args.get_average_scores:
+            scores_averaged = get_average_scores(scores_list[i])
+            scores_final[model] = scores_averaged
+        else:
+            scores_final[model] = scores_list[i]
+            
+        jdump(scores_final, args.evaluation_results)
+        print("=============================================")
+        print("Evaluation results saved to {}".format(args.evaluation_results))
 
 
 if __name__ == "__main__":
