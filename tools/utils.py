@@ -194,6 +194,51 @@ def parse_args():
         nargs='+',
         required=False,
     )
+    parser.add_argument(
+        '--gpu-id-medalpaca',
+        default=0,
+        type=int,
+        help='the ID of the GPU to run on'
+    )
+    parser.add_argument(
+        '-g-medalpaca',
+        '--gpu-vram-medalpaca',
+        action='store',
+        help='max VRAM to allocate per GPU',
+        nargs='+',
+        required=False,
+    )
+    parser.add_argument(
+        '--peft-weights-version2',
+        default=f"/peft_weights",
+        help='name/path of peft-weights'
+    )
+    parser.add_argument(
+        '--peft-weights-medalpaca',
+        default=f"/peft_weights",
+        help='name/path of peft-weights'
+    )
+    parser.add_argument(
+        '--get-average-scores',
+        action='store_true',
+        help='whether to get average scores directly for the models'
+    )   
+    # for g-eval only
+    parser.add_argument(
+        '--metric',
+        default='Empathy',
+        help='the metric to be evaluated using G-Eval',
+    )
+    parser.add_argument(
+        '--prompt-path',
+        default='/cluster/home/Aceso/evaluation/prompts/empathy.txt',
+        help='the txt file stores the prompt',
+    )
+    parser.add_argument(
+        '--geval-results',
+        default='geval_result.json',
+        help='the file name for storing G-Eval results for the metric',
+    )
 
     args = parser.parse_args()
     return args
