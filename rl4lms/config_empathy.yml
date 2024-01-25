@@ -1,0 +1,75 @@
+tokenizer:
+  model_name: Dong237/ChatAceso-version1
+  padding_side: left
+  truncation_side: left
+  pad_token_as_eos_token: True
+
+reward_fn:
+  id: "emotion_alignment"
+
+datapool:
+  id: "empathetic_dialogues"
+  args:
+    context_size: 3
+
+env:
+  n_envs: 10
+  args:
+    max_prompt_length: 128
+    max_episode_length: 64
+    terminate_on_eos: True
+
+alg:
+  id: ppo
+  args: 
+    n_steps: 64
+    batch_size: 32
+    verbose: 1
+    learning_rate: 0.000001
+    n_epochs: 3
+    
+  kl_div:
+    coeff: 0.2
+    target_kl: 1
+
+  policy:
+    id: causal_lm_actor_critic_policy
+    args:
+      model_name: Dong237/ChatAceso-version1
+      apply_model_parallel: True
+      generation_kwargs:
+        do_sample: True
+        top_k: 20
+        min_length: 2
+        max_new_tokens: 128
+      
+train_evaluation:
+  eval_batch_size: 32
+  n_iters: 100
+  eval_every: 25
+  save_every: 5
+  metrics:
+    - id: causal_perplexity
+      args:
+        tokenizer_id: Dong237/ChatAceso-version1
+        stride: 128
+        model_type: causal
+    - id: diversity
+      args: {}
+    - id: meteor
+      args: {}
+    - id: rouge
+    - id: bleu
+      args: {}
+    - id: bert_score
+      args:
+        language: en
+    - id: sacre_bleu
+      args:
+        tokenize: "intl"
+  generation_kwargs:
+    do_sample: True
+    top_k: 0.0
+    top_p: 1.0
+    min_length: -1
+    max_new_tokens: 128
